@@ -1,0 +1,49 @@
+## Base commands ##
+
+* sudo docker ps -a
+* sudo docker images
+* sudo docker rm -f <container name>
+* sudo docker logs <container name>
+* sudo docker start <container name>
+* sudo docker stop <container name>
+* sudo docker attach <container name>
+* sudo docker detach <container name>
+* sudo docker image rm -f <image tag>
+
+## Remove bulk containers or images ##
+https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+
+## Terminology ##
+
+* -d starts the container in daemon mode
+* -it starts the container in interactive mode
+* sudo docker logs <container name> for inspecting logs
+
+## Create an image ##
+* sudo docker build <docker folder location> -t <image tag>
+* building takes time the first time, subsequent times caching takes place
+* building involves creating several child temp containers to perform the build steps
+
+## Mounting ##
+* format is local_machine:container
+* -p for ports and -v for volumes
+* multiple ports and volumes can be mounted, each with -p and -v respectively
+* mounting of volumes allows changes in docker container to be seen on host and vice versa
+* there is a difference between mounting /data and ~/data on the local machine to the container
+
+## Running containers ##
+* sudo docker run -dit --name <container name> -p 8080:80 -v ~/data:/data <image tag>
+* sudo docker run -dit --name <container name> --network <network bridge> -m 4g <image name>
+
+## The--rm flag ##
+* if you stop the container, then the container gets auto removed when this flag is enabled
+* sudo docker run --rm -d --name <container name> -it <image name>
+
+## Enter into container ##
+* ubuntu: sudo docker exec -it <container name> /bin/bash
+* alpine: sudo docker exec -it <container name> /bin/sh
+* entry point is set at the working dir specified in the docker file
+
+## Misc ##
+* note that you CANNOT copy files outside of the build context folder 
+* so you have to run COPY . /data if you want to copy all contents from "Dockerfile's current folder" (on host) to the container created

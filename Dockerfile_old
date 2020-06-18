@@ -1,0 +1,76 @@
+FROM w251/cuda:dev-tx2-4.3_b132
+
+ARG URL=http://169.44.201.108:7002/jetpacks/4.3
+USER root
+
+RUN apt-get update && apt install -y git pkg-config wget build-essential cmake unzip mosquitto-clients
+
+WORKDIR /tmp
+
+RUN curl $URL/libopencv_3.3.1-2-g31ccdfe11_arm64.deb  -so libopencv_3.3.1-2-g31ccdfe11_arm64.deb
+RUN curl $URL/libopencv-dev_3.3.1-2-g31ccdfe11_arm64.deb -so libopencv-dev_3.3.1-2-g31ccdfe11_arm64.deb
+RUN curl $URL/libopencv-python_3.3.1-2-g31ccdfe11_arm64.deb -so libopencv-python_3.3.1-2-g31ccdfe11_arm64.deb
+
+RUN apt remove -y libopencv-calib3d-dev libopencv-core-dev 
+
+RUN apt install -y libtbb-dev libavcodec-dev libavformat-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgtk2.0-dev
+RUN apt install -y libswscale-dev libv4l-dev
+
+RUN dpkg -i *.deb
+
+RUN apt install -y libcanberra-gtk-module libcanberra-gtk3-module libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev 
+
+# Install Darknet (Not needed strictly)
+WORKDIR /
+RUN git clone https://github.com/pjreddie/darknet.git
+WORKDIR /darknet
+
+# Fix Makefile, make, and fix .cfg files
+RUN sed -i "s/^GPU=0/GPU=1/g" Makefile && sed -i "s/^CUDNN=0/CUDNN=1/g" Makefile && sed -i "s/^OPENCV=0/OPENCV=1/g" Makefile
+ENV PATH $PATH:/usr/local/cuda-10.0/bin
+RUN ldconfig
+RUN make -j6
+RUN sed -i "s/^batch=64/batch=1/g" /darknet/cfg/yolov3.cfg && sed -i "s/^subdivisions=16/subdivisions=1/g" /darknet/cfg/yolov3.cfg 
+WORKDIR /
+
+RUN rm -f /tmp/*.deb
+
+# Install general dependencies
+RUN apt install -y python3-dev
+RUN apt install -y python3-pip
+RUN pip3 install cython
+RUN pip3 install matplotlib
+RUN pip3 install paho-mqtt
+RUN pip3 install requests
+RUN pip3 install Pillow
+RUN pip3 install wget
+
+# Install tf dependencies
+#RUN apt install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+#RUN pip3 install -U testresources setuptools
+#RUN pip3 install -U numpy==1.16.1 future==0.17.1 mock==3.0.5 h5py==2.9.0 keras_preprocessing==1.0.5 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+#RUN pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 'tensorflow<2'
+
+# Tensor RT
+RUN mkdir /trt
+WORKDIR /trt
+COPY /trt/ ./
+RUN pip3 install tensorflow-1.9.0rc0-cp35-cp35m-linux_aarch64.whl --user
+
+WORKDIR /
+RUN git clone --recursive https://github.com/NVIDIA-Jetson/tf_trt_models.git
+WORKDIR tf_trt_models
+RUN ./install.sh python3
+WORKDIR /
+
+# Tmp directory
+WORKDIR /tmp
+VOLUME /tmp
+COPY . /tmp
+
+# Maximize perf
+CMD nvpmodel -m 0
+CMD ./jetson_clocks.sh
+
+# Start fd
+CMD python3 custom_fd.py
