@@ -37,8 +37,9 @@ WORKDIR tf_trt_models
 RUN ./install.sh python3
 
 # Maximize perf
-CMD nvpmodel -m 0
-CMD ./jetson_clocks.sh
+#WORKDIR /
+#CMD nvpmodel -m 0
+#CMD ./jetson_clocks.sh
 
 WORKDIR /
 RUN mkdir /datacon
