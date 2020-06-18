@@ -1,15 +1,2 @@
-These are the instructions for the face detector publisher module.
+docker run -dit --name fd1 -v /data/w251/w251_hw7/img:/datacon/img fdimagecustom1
 
-- We start a face detector container by first building the image under fdfiles
-- We do this by going to the fdfiles directory and doing "docker build . -t fdimage1"
-- Next we create a network bridge for our broker container to be able to interact with our forwarder container + publisher: "docker network create --driver bridge hw03"
-- Next we start the broker on the Tx2 with the networking bridge:
-- "docker run -dit  --network hw03 --name mosquitto1 -p 1883:1883 eclipse-mosquitto" 
-- This establishes a broker that is listening on port 1833 for all IP addresses on the host node
-- Next we enable xhost+ to allow for the usb camera to work. Ofcourse, the camera should be plugged in.
-- Next we start our image publisher container: "docker run -dit --network hw03 --privileged -e DISPLAY=$DISPLAY --name fd1 -m 500m fdimage1"   
-- Alternatively, if we want to start the image publisher and have access to the current images on the host machine, we start with the below command
-- docker run -dit --network hw03 --privileged -e DISPLAY=$DISPLAY --name fd1 -v /data/w251/w251_hw3/fdfiles/img:/tmp/img -m 500m fdimage1
-- At this point, if we inspect the logs of the publisher we notice that the data is being published
-- However, it needs to be received by the forwarder and it needs to be re-published to the remote ibm cloud VSI
-- So next, we need to set up the image forwarder module, please look at instructions.txt within fwderfiles for next steps
