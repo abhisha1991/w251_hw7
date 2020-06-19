@@ -1,1 +1,4 @@
-docker run -dit --privileged -e DISPLAY=$DISPLAY --name fd1 -v /data/w251/w251_hw7/img:/datacon/img fdcustom
+docker build . -t facedetector
+docker run -dit --privileged -e DISPLAY=$DISPLAY --name fd1 -v /data/w251/w251_hw7/img:/datacon/img facedetector
+docker exec -it fd1 /bin/bash
+from inside the container: python3 main.py
