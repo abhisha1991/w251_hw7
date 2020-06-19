@@ -8,17 +8,6 @@ import os
 import paho.mqtt.client as paho
 import uuid
 
-# init mqtt
-broker = "mosquitto1"
-port = 1883
-def on_publish(client,userdata,result):
-    print("data published")
-
-client1 = paho.Client("P1tx2")
-client1.on_publish = on_publish
-client1.connect(broker, port)
-print("Connected to broker")
-
 # create temp directory for images
 path = os.getcwd() + "/img"
 try:
@@ -57,11 +46,8 @@ while(True):
         roi_color = img[y:y+h, x:x+w]
         # bad design - writing and then re-reading image, needs to be revisited
         img_name = "{0}/image-{1}.jpg".format(path, str(uuid.uuid4()))
-        cv2.imwrite(img_name, roi_gray)
-        image = cv2.imread(img_name)
-        # finally send the image via mqtt
-        ret = client1.publish("fdimagestx2/test", bytes(image))
-        print("sent image data!")
+        #cv2.imwrite(img_name, roi_gray)
+        #image = cv2.imread(img_name)
 
 # When everything done, release the capture
 cap.release()
