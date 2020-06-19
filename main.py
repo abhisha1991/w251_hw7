@@ -7,6 +7,7 @@ import random
 import os
 import paho.mqtt.client as paho
 import uuid
+from custom_fd import detect_image
 
 # create temp directory for images
 path = os.getcwd() + "/img"
@@ -28,7 +29,8 @@ while(True):
     img_name_color = "{0}/image-color-{1}.jpg".format(path, str(uuid.uuid4()))
     print("captured an image...")
     #cv2.imwrite(img_name_gray, gray)
-    #cv2.imwrite(img_name_color, frame)
+    cv2.imwrite(img_name_color, frame)
+    detect_image(img_name_color)
     time.sleep(5)
 
 # When everything done, release the capture
