@@ -63,6 +63,7 @@ RUN pip3 install paho-mqtt
 RUN pip3 install requests
 RUN pip3 install Pillow
 RUN pip3 install wget
+RUN pip3 install numpy
 RUN rm -fr /protobuf
 WORKDIR /notebooks
 
