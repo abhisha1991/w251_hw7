@@ -14,11 +14,12 @@ import wget
 from tf_trt_models.detection import download_detection_model, build_detection_graph
 
 IMAGE_PATH = ''
+FROZEN_GRAPH_NAME = 'frozen_inference_graph_face.pb'
 def detect_image(image_file_path):
 	IMAGE_PATH = image_file_path
 	ensure_img_dir()
-	FROZEN_GRAPH_NAME = 'frozen_inference_graph_face.pb'
 	download("https://github.com/yeephycho/tensorflow-face-detection/blob/master/model/frozen_inference_graph_face.pb?raw=true", FROZEN_GRAPH_NAME)
+	do_detect()
 
 def ensure_img_dir():
 	# create temp directory for images
@@ -119,7 +120,7 @@ def do_detect():
 		plt.text(x=box[1] + 10, y=box[2] - 10, s='%d (%0.2f) ' % (classes[i], scores[i]), color='w')
 
 
-	plt.savefig("{0}/result.jpg".format(path))
+	#plt.savefig("{0}/result.jpg".format(path))
 	#plt.show()
 
 	tf_sess.close()
