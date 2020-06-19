@@ -1,3 +1,13 @@
+One time setup - building the base image
+We are using a custom image pushed to docker hub for this exercise
+To create this image do the following:
+docker build -t fdcustom -f Dockerfile_source .
+Then follow steps here: https://ropenscilabs.github.io/r-docker-tutorial/04-Dockerhub.html
+At a high level, post build:
+docker tag <tag ID of new image> abhisha1991/fdcustom:fdcustom
+docker push abhisha1991/fdcustom
+Now if we build the "facedetector" image, it just pulls from docker hub and uses this custom image built with Dockerfile_source
+
 docker build . -t facedetector
 docker run -dit --privileged -e DISPLAY=$DISPLAY --name fd1 -v /data/w251/w251_hw7/img:/datacon/img facedetector
 docker exec -it fd1 /bin/bash
