@@ -43,7 +43,7 @@ VOLUME /tmp
 COPY . /tmp
 
 ###### install the c++ version of protobuf ####
-#RUN pip3 uninstall -y protobuf
+RUN pip3 uninstall -y protobuf
 RUN pip3 install cython
 
 RUN mkdir /protobuf
@@ -83,4 +83,4 @@ COPY . /datacon
 WORKDIR /datacon
 
 #RUN python3 custom_fd.py
-RUN python3 main.py
+#RUN python3 main.py
