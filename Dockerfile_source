@@ -76,11 +76,3 @@ RUN ./install.sh python3
 #CMD nvpmodel -m 0
 #CMD ./jetson_clocks.sh
 
-WORKDIR /
-RUN mkdir /datacon
-# assumes root is the base of the repo
-COPY . /datacon
-WORKDIR /datacon
-
-#RUN python3 custom_fd.py
-#RUN python3 main.py

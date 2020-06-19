@@ -1,4 +1,8 @@
-FROM abhisha1991/fdcustom
+FROM abhisha1991/fdcustom:fdcustom
 USER root
 
-RUN python3 main.py
+WORKDIR /
+RUN mkdir /datacon
+# assumes root is the base of the repo
+COPY . /datacon
+WORKDIR /datacon
