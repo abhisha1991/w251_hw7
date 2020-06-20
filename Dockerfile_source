@@ -5,7 +5,7 @@
 FROM w251/keras:dev-tx2-4.3_b132-tf1
 USER root
 
-RUN apt update && apt install python3-matplotlib python3-pil wget -y
+RUN apt-get update && apt install -y python3-matplotlib python3-pil wget
 RUN apt install git pkg-config build-essential cmake unzip mosquitto-clients -y
 
 ###### Install Open CV for video capture
@@ -44,6 +44,7 @@ COPY . /tmp
 
 ###### install the c++ version of protobuf ####
 RUN pip3 uninstall -y protobuf
+RUN apt install -y python3-pip
 RUN pip3 install cython
 
 RUN mkdir /protobuf
