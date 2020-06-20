@@ -9,6 +9,7 @@ docker push abhisha1991/fdcustom
 Now if we build the "facedetector" image, it just pulls from docker hub and uses this custom image built with Dockerfile_source
 
 docker build . -t facedetector
+xhost +
 docker run -dit --privileged -e DISPLAY=$DISPLAY --name fd1 -v /data/w251/w251_hw7/img:/datacon/img facedetector
 docker exec -it fd1 /bin/bash
 from inside the container: python3 main.py
